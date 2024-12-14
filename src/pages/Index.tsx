@@ -29,24 +29,24 @@ const constitutionData = {
   },
   
   "fundamental duties": {
-    "introduction": "Added by 42nd Amendment in 1976 upon Swaran Singh Committee recommendations.",
+    "general": "Added by 42nd Amendment in 1976 upon Swaran Singh Committee recommendations.",
     "court interpretation": "In AIIMS Students Union case (2001), Supreme Court emphasized that fundamental duties are as important as fundamental rights."
   },
   
   "parliament": {
-    "structure": "Consists of the President and two Houses - Rajya Sabha (Council of States) and Lok Sabha (House of the People).",
+    "general": "Consists of the President and two Houses - Rajya Sabha (Council of States) and Lok Sabha (House of the People).",
     "powers": "Can make laws on subjects in Union List and Concurrent List. In case of conflict with state law, parliament law prevails as per Article 254.",
     "landmark cases": "In Raja Ram Pal case (2007), Supreme Court upheld Parliament's power to expel members for misconduct."
   },
   
   "supreme court": {
-    "powers": "Highest judicial forum and final court of appeal under the Constitution of India.",
+    "general": "Highest judicial forum and final court of appeal under the Constitution of India.",
     "jurisdiction": "Original, Appellate, and Advisory jurisdiction under Articles 131, 132-136, and 143 respectively.",
     "key decisions": "Established basic structure doctrine (Kesavananda Bharati, 1973), Right to Privacy (Justice Puttaswamy, 2017)"
   },
   
   "emergency provisions": {
-    "types": "Three types: National Emergency (Article 352), State Emergency (Article 356), Financial Emergency (Article 360)",
+    "general": "Three types: National Emergency (Article 352), State Emergency (Article 356), Financial Emergency (Article 360)",
     "landmark cases": "In S.R. Bommai case (1994), Supreme Court made President's power to impose State Emergency subject to judicial review."
   }
 };
@@ -69,7 +69,8 @@ const findAnswer = (question: string): string => {
   for (const [key, value] of Object.entries(constitutionData)) {
     if (lowercaseQuestion.includes(key)) {
       if (typeof value === 'object') {
-        return value.general || value.introduction || Object.values(value)[0];
+        // Return the general description if available, otherwise return the first value
+        return value.general || Object.values(value)[0];
       }
       return value;
     }
