@@ -52,30 +52,65 @@ const constitutionData = {
 };
 
 const findAnswer = (question: string): string => {
-  const lowercaseQuestion = question.toLowerCase();
+  const lowercaseQuestion = question.toLowerCase().trim();
+  let bestMatch = "";
   
-  // Check for specific sub-topics first
+  // Helper function to check if any word in the question matches a key term
+  const hasMatchingWord = (text: string, searchTerms: string[]): boolean => {
+    const words = text.toLowerCase().split(/\s+/);
+    return searchTerms.some(term => words.includes(term.toLowerCase()));
+  };
+
+  // First, try to find exact topic matches
+  for (const [mainTopic, content] of Object.entries(constitutionData)) {
+    const searchTerms = mainTopic.split(/\s+/);
+    
+    if (typeof content === 'object') {
+      // Check subtopics first for more specific matches
+      for (const [subTopic, subContent] of Object.entries(content)) {
+        if (lowercaseQuestion.includes(subTopic.toLowerCase()) || 
+            hasMatchingWord(lowercaseQuestion, subTopic.split(/\s+/))) {
+          return subContent;
+        }
+      }
+      
+      // If main topic matches
+      if (lowercaseQuestion.includes(mainTopic.toLowerCase()) || 
+          hasMatchingWord(lowercaseQuestion, searchTerms)) {
+        return content.general || Object.values(content)[0];
+      }
+    }
+  }
+
+  // If no exact match found, try to find related content
   for (const [mainTopic, content] of Object.entries(constitutionData)) {
     if (typeof content === 'object') {
+      // Search through all content for relevant keywords
       for (const [subTopic, subContent] of Object.entries(content)) {
-        if (lowercaseQuestion.includes(subTopic)) {
-          return subContent;
+        const searchTerms = [...mainTopic.split(/\s+/), ...subTopic.split(/\s+/)];
+        if (hasMatchingWord(lowercaseQuestion, searchTerms)) {
+          bestMatch = subContent;
+          break;
         }
       }
     }
   }
-  
-  // Check for main topics
-  for (const [key, value] of Object.entries(constitutionData)) {
-    if (lowercaseQuestion.includes(key)) {
-      if (typeof value === 'object') {
-        // Return the general description if available, otherwise return the first value
-        return value.general || Object.values(value)[0];
-      }
-      return value;
-    }
+
+  if (bestMatch) {
+    return bestMatch;
   }
-  
+
+  // Special cases for common constitutional terms
+  if (lowercaseQuestion.includes('freedom') || lowercaseQuestion.includes('liberty')) {
+    return constitutionData["fundamental rights"]["right to freedom"];
+  }
+  if (lowercaseQuestion.includes('equality')) {
+    return constitutionData["fundamental rights"]["right to equality"];
+  }
+  if (lowercaseQuestion.includes('life')) {
+    return constitutionData["fundamental rights"]["right to life"];
+  }
+
   return "I apologize, but I don't have specific information about that aspect of the Indian Constitution. Please try asking about the preamble, fundamental rights (including right to equality, freedom, and life), directive principles, fundamental duties, parliament, supreme court, or emergency provisions.";
 };
 
