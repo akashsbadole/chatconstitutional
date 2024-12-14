@@ -12,11 +12,34 @@ export type Message = {
   isBot: boolean;
 };
 
+const constitutionData = {
+  "preamble": "WE, THE PEOPLE OF INDIA, having solemnly resolved to constitute India into a SOVEREIGN SOCIALIST SECULAR DEMOCRATIC REPUBLIC and to secure to all its citizens: JUSTICE, LIBERTY, EQUALITY, and FRATERNITY.",
+  "fundamental rights": "The Fundamental Rights are enshrined in Part III of the Constitution. They include Right to Equality, Right to Freedom, Right against Exploitation, Right to Freedom of Religion, Cultural and Educational Rights, and Right to Constitutional Remedies.",
+  "directive principles": "The Directive Principles of State Policy are guidelines to the central and state governments for establishing a just society in the country.",
+  "fundamental duties": "The Fundamental Duties of citizens were added to the Constitution by the 42nd Amendment in 1976, upon the recommendations of the Swaran Singh Committee.",
+  "parliament": "The Parliament of India consists of the President and two Houses - Rajya Sabha (Council of States) and Lok Sabha (House of the People).",
+  "supreme court": "The Supreme Court of India is the highest judicial forum and final court of appeal under the Constitution of India.",
+  "emergency provisions": "The Constitution provides for three types of emergencies: National Emergency (Article 352), State Emergency (Article 356), and Financial Emergency (Article 360)."
+};
+
+const findAnswer = (question: string): string => {
+  const lowercaseQuestion = question.toLowerCase();
+  
+  // Check for keywords in the question
+  for (const [key, value] of Object.entries(constitutionData)) {
+    if (lowercaseQuestion.includes(key)) {
+      return value;
+    }
+  }
+  
+  return "I apologize, but I don't have specific information about that aspect of the Indian Constitution. Please try asking about the preamble, fundamental rights, directive principles, fundamental duties, parliament, supreme court, or emergency provisions.";
+};
+
 const Index = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
-      content: "Hello! I'm your Indian Constitution assistant. Ask me anything about the Constitution of India!",
+      content: "Hello! I'm your Indian Constitution assistant. Ask me about the Preamble, Fundamental Rights, Parliament, Supreme Court, or other constitutional topics!",
       isBot: true,
     },
   ]);
@@ -37,11 +60,13 @@ const Index = () => {
     setInput("");
     setIsLoading(true);
 
-    // Simulate bot response - Replace this with actual API call later
+    // Get response based on user's question
+    const answer = findAnswer(input);
+    
     setTimeout(() => {
       const botMessage = {
         id: (Date.now() + 1).toString(),
-        content: "I'm currently in development. Soon, I'll be able to answer your questions about the Indian Constitution!",
+        content: answer,
         isBot: true,
       };
       setMessages((prev) => [...prev, botMessage]);
@@ -52,8 +77,8 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background p-4 md:p-8">
       <Card className="mx-auto max-w-2xl h-[80vh] flex flex-col">
-        <div className="bg-primary p-4 rounded-t-lg">
-          <h1 className="text-primary-foreground text-xl font-bold text-center">
+        <div className="bg-[#FF9933] p-4 rounded-t-lg">
+          <h1 className="text-white text-xl font-bold text-center">
             Indian Constitution Chatbot
           </h1>
         </div>
