@@ -13,33 +13,76 @@ export type Message = {
 };
 
 const constitutionData = {
-  "preamble": "WE, THE PEOPLE OF INDIA, having solemnly resolved to constitute India into a SOVEREIGN SOCIALIST SECULAR DEMOCRATIC REPUBLIC and to secure to all its citizens: JUSTICE, LIBERTY, EQUALITY, and FRATERNITY.",
-  "fundamental rights": "The Fundamental Rights are enshrined in Part III of the Constitution. They include Right to Equality, Right to Freedom, Right against Exploitation, Right to Freedom of Religion, Cultural and Educational Rights, and Right to Constitutional Remedies.",
-  "directive principles": "The Directive Principles of State Policy are guidelines to the central and state governments for establishing a just society in the country.",
-  "fundamental duties": "The Fundamental Duties of citizens were added to the Constitution by the 42nd Amendment in 1976, upon the recommendations of the Swaran Singh Committee.",
-  "parliament": "The Parliament of India consists of the President and two Houses - Rajya Sabha (Council of States) and Lok Sabha (House of the People).",
-  "supreme court": "The Supreme Court of India is the highest judicial forum and final court of appeal under the Constitution of India.",
-  "emergency provisions": "The Constitution provides for three types of emergencies: National Emergency (Article 352), State Emergency (Article 356), and Financial Emergency (Article 360)."
+  "preamble": "WE, THE PEOPLE OF INDIA, having solemnly resolved to constitute India into a SOVEREIGN SOCIALIST SECULAR DEMOCRATIC REPUBLIC and to secure to all its citizens: JUSTICE, LIBERTY, EQUALITY, and FRATERNITY. The Supreme Court in Kesavananda Bharati case (1973) held that the Preamble is part of the Constitution and can be amended, subject to the basic structure doctrine.",
+  
+  "fundamental rights": {
+    "general": "The Fundamental Rights are enshrined in Part III of the Constitution. They include Right to Equality, Right to Freedom, Right against Exploitation, Right to Freedom of Religion, Cultural and Educational Rights, and Right to Constitutional Remedies.",
+    "right to equality": "Articles 14-18: Ensures equality before law and equal protection of laws. In Indra Sawhney case (1992), the Supreme Court upheld reservations for socially and educationally backward classes while capping it at 50%.",
+    "right to freedom": "Articles 19-22: Protects six fundamental freedoms including speech, assembly, and movement. In Shreya Singhal case (2015), the Supreme Court struck down Section 66A of IT Act as violative of freedom of speech.",
+    "right to life": "Article 21: The Supreme Court in Maneka Gandhi case (1978) interpreted it to include right to live with dignity, right to privacy, and right to clean environment."
+  },
+  
+  "directive principles": {
+    "general": "The Directive Principles of State Policy are guidelines to governments for establishing a just society.",
+    "key principles": "Include uniform civil code, protection of environment, free legal aid, and right to work.",
+    "court decisions": "In Minerva Mills case (1980), Supreme Court held that fundamental rights and directive principles form the basic features of Constitution and are complementary to each other."
+  },
+  
+  "fundamental duties": {
+    "introduction": "Added by 42nd Amendment in 1976 upon Swaran Singh Committee recommendations.",
+    "court interpretation": "In AIIMS Students Union case (2001), Supreme Court emphasized that fundamental duties are as important as fundamental rights."
+  },
+  
+  "parliament": {
+    "structure": "Consists of the President and two Houses - Rajya Sabha (Council of States) and Lok Sabha (House of the People).",
+    "powers": "Can make laws on subjects in Union List and Concurrent List. In case of conflict with state law, parliament law prevails as per Article 254.",
+    "landmark cases": "In Raja Ram Pal case (2007), Supreme Court upheld Parliament's power to expel members for misconduct."
+  },
+  
+  "supreme court": {
+    "powers": "Highest judicial forum and final court of appeal under the Constitution of India.",
+    "jurisdiction": "Original, Appellate, and Advisory jurisdiction under Articles 131, 132-136, and 143 respectively.",
+    "key decisions": "Established basic structure doctrine (Kesavananda Bharati, 1973), Right to Privacy (Justice Puttaswamy, 2017)"
+  },
+  
+  "emergency provisions": {
+    "types": "Three types: National Emergency (Article 352), State Emergency (Article 356), Financial Emergency (Article 360)",
+    "landmark cases": "In S.R. Bommai case (1994), Supreme Court made President's power to impose State Emergency subject to judicial review."
+  }
 };
 
 const findAnswer = (question: string): string => {
   const lowercaseQuestion = question.toLowerCase();
   
-  // Check for keywords in the question
+  // Check for specific sub-topics first
+  for (const [mainTopic, content] of Object.entries(constitutionData)) {
+    if (typeof content === 'object') {
+      for (const [subTopic, subContent] of Object.entries(content)) {
+        if (lowercaseQuestion.includes(subTopic)) {
+          return subContent;
+        }
+      }
+    }
+  }
+  
+  // Check for main topics
   for (const [key, value] of Object.entries(constitutionData)) {
     if (lowercaseQuestion.includes(key)) {
+      if (typeof value === 'object') {
+        return value.general || value.introduction || Object.values(value)[0];
+      }
       return value;
     }
   }
   
-  return "I apologize, but I don't have specific information about that aspect of the Indian Constitution. Please try asking about the preamble, fundamental rights, directive principles, fundamental duties, parliament, supreme court, or emergency provisions.";
+  return "I apologize, but I don't have specific information about that aspect of the Indian Constitution. Please try asking about the preamble, fundamental rights (including right to equality, freedom, and life), directive principles, fundamental duties, parliament, supreme court, or emergency provisions.";
 };
 
 const Index = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
-      content: "Hello! I'm your Indian Constitution assistant. Ask me about the Preamble, Fundamental Rights, Parliament, Supreme Court, or other constitutional topics!",
+      content: "Hello! I'm your Indian Constitution assistant. Ask me about the Preamble, Fundamental Rights (including specific rights like equality, freedom, life), Parliament, Supreme Court decisions, or other constitutional topics!",
       isBot: true,
     },
   ]);
@@ -60,7 +103,6 @@ const Index = () => {
     setInput("");
     setIsLoading(true);
 
-    // Get response based on user's question
     const answer = findAnswer(input);
     
     setTimeout(() => {
